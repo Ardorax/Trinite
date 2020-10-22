@@ -1,0 +1,5 @@
+node_modules
+trinite.sqlite
+main_serv.json
+todo.txt
+package-lock.json
