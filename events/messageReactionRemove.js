@@ -4,17 +4,21 @@ module.exports = async (client, reac, user) => {
         //role eleve
         reac.message.guild.member(user).roles.remove("768447235485728788")
         client.guilds.cache.get("767084336737943582").channels.cache.get("768455338868342864").send(`:x: ${user} eleve`)
-    } else if(reac.message.id == "762726512330801193" && reac.emoji.name == "🇸") {
+    } else if(reac.message.id == "768918029764657234" && reac.emoji.name == "🇸") {
         //role seconde
         reac.message.guild.member(user).roles.remove("762720116529692703")
         client.guilds.cache.get("767084336737943582").channels.cache.get("768455338868342864").send(`:x: ${user} seconde`)
-    } else if(reac.message.id == "762726083828908083" && reac.emoji.name == "🇵") {
+    } else if(reac.message.id == "768918029764657234" && reac.emoji.name == "🇵") {
         //role premiere
         reac.message.guild.member(user).roles.remove("762720071277346846")
         client.guilds.cache.get("767084336737943582").channels.cache.get("768455338868342864").send(`:x: ${user} premiere`)
-    } else if(reac.message.id == "762725615186477056" && reac.emoji.name == "🇹") {
+    } else if(reac.message.id == "768918029764657234" && reac.emoji.name == "🇹") {
         //role terminale
         reac.message.guild.member(user).roles.remove("762720018877382666")
         client.guilds.cache.get("767084336737943582").channels.cache.get("768455338868342864").send(`:x: ${user} terminale`)
+    } else if(reac.message.id == "768918029764657234" && reac.emoji.name == "🇨") {
+        //role terminale
+        reac.message.guild.member(user).roles.remove("764938642278973451")
+        client.guilds.cache.get("767084336737943582").channels.cache.get("768455338868342864").send(`:x: ${user} college`)
     }
 };
