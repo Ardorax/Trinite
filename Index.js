@@ -41,12 +41,11 @@ fs.readdir('./events/', (error, f) => {
         });
 });
 
+/*
+client.on("messageDeleteBulk", message => {
 
-client.on("message", message => {
-    if (message.author.id != "277100743616364544") return;
-    
 });
-
+*/
 /*
 const SQLite = require("better-sqlite3");
 const sql = new SQLite('./trinite.sqlite');

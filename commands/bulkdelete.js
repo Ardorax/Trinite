@@ -9,14 +9,15 @@ module.exports = {
     execute(message, args) {
 
         //historique a log
-        let hist = ""
-        message.channel.bulkDelete(Number(args[1]) + 1).then(
+        message.channel.bulkDelete(Number(args[1]) + 1)
+        /*
+        .then(
             async msg => {
                 msg.each(m => hist += `${m.author} ${m.content}\n`)
                 message.client.guilds.cache.get("767084336737943582").channels.cache.get("768077976478154752").send(hist,{
                     split:true
                 })
-            });
+            });*/
     }
         
 }

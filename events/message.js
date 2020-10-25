@@ -6,7 +6,7 @@ module.exports = (client, message) => {
 
     //gestion des fichiers joints
     if (message.attachments.first() && message.author.id != "767082620374614017") {
-        client.guilds.cache.get("767084336737943582").channels.cache.get("768079732486307840").send(`${message.author} ${message.channel.name}`,{
+        client.guilds.cache.get("767084336737943582").channels.cache.get("768079732486307840").send(`${message.author} ${message.author.username} ${message.channel.name}`,{
             files:[message.attachments.first().url]
         })
     }
