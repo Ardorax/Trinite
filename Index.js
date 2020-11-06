@@ -1,7 +1,6 @@
 //Api discord
-const { SSL_OP_EPHEMERAL_RSA } = require('constants');
 const Discord = require('discord.js');
-const client = new Discord.Client({partials:["MESSAGE"]});
+const client = new Discord.Client({partials:["MESSAGE","GUILD_MEMBER","REACTION"]});
 client.commands = new Discord.Collection();
 
 //Module
