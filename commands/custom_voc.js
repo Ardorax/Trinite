@@ -6,7 +6,6 @@ function change_name(number) {
     else if (number == 10) return "Place"
     else if (number == 0) return "Global"
     else return "Pour " + number
-
 }
 
 
@@ -27,6 +26,7 @@ module.exports = {
         let category = "761872819805224971"
         if (message.guild.id == "767084336737943582") category = "768082375870906369"
 
+        //On ajoutes des channels a ceux déjà existant
         if (args[1] == "add") {
             for (let pas = 2; pas < args.length; pas ++) {
                 let text = args[pas].split(":");
@@ -50,25 +50,45 @@ module.exports = {
 
             
     
-            for (let [k,v] of list.entries()) {
-                for (let to_create = 1; to_create < v + 1; to_create ++) {
-                    if (!message.guild.channels.cache.find(channel => channel.userLimit == k && channel.name.endsWith(exist.get(k) || 0))) {
-                        await message.guild.channels.create(`『🎮』${change_name(k)} #${to_create}`,{
+            for (let [nb_personne,nb_channel] of list.entries()) {
+                for (let to_create = 0; to_create < nb_channel; to_create ++) {
+                    if(!exist.has(nb_personne)) {
+                        await message.guild.channels.create(`『🎮』${change_name(nb_personne)} #${to_create + 1}`,{
                             parent:message.guild.channels.cache.get(category),
                             type:"voice",
-                            userLimit:k,
+                            userLimit:nb_personne,
                         });
                     } else {
-                        await message.guild.channels.create(`『🎮』${change_name(k)} #${to_create + (exist.get(k) || 0)}`,{
+                        await message.guild.channels.create(`『🎮』${change_name(nb_personne)} #${to_create + 1 + exist.get(nb_channel)}`,{
                             parent:message.guild.channels.cache.get(category),
                             type:"voice",
-                            userLimit:k,
-                            position:message.guild.channels.cache.find(channel => channel.userLimit == k && channel.name.endsWith(exist.get(k) || 0)).position
+                            userLimit:nb_personne,
+                            position:message.guild.channels.cache.find(channel => channel.userLimit == nb_personne && channel.name.endsWith(exist.get(nb_personne) + to_create || 0)).position
                         });
                     }
+
+
+                    /*for (let to_create = 0; to_create < v; to_create ++) {
+                        if (!exist.has(k)) {
+                            await message.guild.channels.create(`『🎮』${change_name(k)} #${to_create}`,{
+                                parent:message.guild.channels.cache.get(category),
+                                type:"voice",
+                                userLimit:k,
+                            });
+                        } else {
+                            await message.guild.channels.create(`『🎮』${change_name(k)} #${to_create + exist.get(k)}`,{
+                                parent:message.guild.channels.cache.get(category),
+                                type:"voice",
+                                userLimit:k,
+                                position:message.guild.channels.cache.find(channel => channel.userLimit == k && channel.name.endsWith(exist.get(k) || 0)).position + 1
+                            });
+                            exist.set(k, (exist.get(k) || 0) + 1)
+                        }
+                    }*/
                 }
             }
         }
+
         else {
             for (let pas = 1; pas < args.length; pas ++) {
                 let text = args[pas].split(":");

@@ -1,6 +1,6 @@
 //Api discord
 const Discord = require('discord.js');
-const client = new Discord.Client({partials:["MESSAGE","GUILD_MEMBER","REACTION"]});
+const client = new Discord.Client(intents=Discord.Intents.ALL,{partials:["MESSAGE","GUILD_MEMBER","REACTION"]});
 client.commands = new Discord.Collection();
 
 //Module
@@ -40,11 +40,10 @@ fs.readdir('./events/', (error, f) => {
         });
 });
 
-/*
-client.on("messageDeleteBulk", message => {
 
+client.on("guildMemberAdd", member => {
 });
-*/
+
 /*
 const SQLite = require("better-sqlite3");
 const sql = new SQLite('./trinite.sqlite');
