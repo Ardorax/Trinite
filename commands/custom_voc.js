@@ -28,6 +28,8 @@ module.exports = {
 
         //On ajoutes des channels a ceux déjà existant
         if (args[1] == "add") {
+
+            // Verification des arguments
             for (let pas = 2; pas < args.length; pas ++) {
                 let text = args[pas].split(":");
                 if (text.length != 2) return message.channel.send(`Il y a un probleme avec :\n${args[pas]}`);
@@ -48,10 +50,14 @@ module.exports = {
                 }
             })
 
-            
-    
+
+            //Pour tous les channels a créé
             for (let [nb_personne,nb_channel] of list.entries()) {
+
+                // Pour tout les channels avec le meme nombre de personne a créé
                 for (let to_create = 0; to_create < nb_channel; to_create ++) {
+
+                    //Si il y en aucun qui existe
                     if(!exist.has(nb_personne)) {
                         await message.guild.channels.create(`『🎮』${change_name(nb_personne)} #${to_create + 1}`,{
                             parent:message.guild.channels.cache.get(category),
@@ -59,37 +65,21 @@ module.exports = {
                             userLimit:nb_personne,
                         });
                     } else {
-                        await message.guild.channels.create(`『🎮』${change_name(nb_personne)} #${to_create + 1 + exist.get(nb_channel)}`,{
+                        await message.guild.channels.create(`『🎮』${change_name(nb_personne)} #${to_create + 1 + exist.get(nb_personne)}`,{
                             parent:message.guild.channels.cache.get(category),
                             type:"voice",
                             userLimit:nb_personne,
-                            position:message.guild.channels.cache.find(channel => channel.userLimit == nb_personne && channel.name.endsWith(exist.get(nb_personne) + to_create || 0)).position
+                            position:message.guild.channels.cache.find(channel => {
+                                return channel.userLimit == nb_personne && channel.name.endsWith(exist.get(nb_personne) + to_create)
+                            }).position
                         });
                     }
-
-
-                    /*for (let to_create = 0; to_create < v; to_create ++) {
-                        if (!exist.has(k)) {
-                            await message.guild.channels.create(`『🎮』${change_name(k)} #${to_create}`,{
-                                parent:message.guild.channels.cache.get(category),
-                                type:"voice",
-                                userLimit:k,
-                            });
-                        } else {
-                            await message.guild.channels.create(`『🎮』${change_name(k)} #${to_create + exist.get(k)}`,{
-                                parent:message.guild.channels.cache.get(category),
-                                type:"voice",
-                                userLimit:k,
-                                position:message.guild.channels.cache.find(channel => channel.userLimit == k && channel.name.endsWith(exist.get(k) || 0)).position + 1
-                            });
-                            exist.set(k, (exist.get(k) || 0) + 1)
-                        }
-                    }*/
                 }
             }
-        }
+        } else {
 
-        else {
+            // Cas ou l'on créé des vocaux simplement
+
             for (let pas = 1; pas < args.length; pas ++) {
                 let text = args[pas].split(":");
                 if (text.length != 2) return message.channel.send(`Il y a un probleme avec :\n${args[pas]}`);

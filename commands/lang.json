@@ -1,0 +1,9 @@
+{   
+    "classe" : ["Terminale","Première","Seconde","Pas au lycee"],
+    "lang" : ["Anglais","Allemand","Espagnol","Italien"],
+    "speciality" : ["Histoire géographie, géopolitique et sciences politiques","Science économique et sociale","Humanités, littérature et philosophie","Langues, littératures et cultures étrangères","Anglais Monde Contemporain","Mathématiques","Physique Chimie","Numérique et sciences informatiques","Science de le vie et de la terre","Arts"],
+    "option" : ["Aucune","Latin","Grec","Latin-Grec","Espagnol LV3","Italien LV3","Excel in English","Cervantes","Goethe","Allemand DNL","Bac International (Cosmopole)","Mathématique Expertes","Mathématiques Complémentaires","Comédie Musicale","E3D","Musique","Arts Plastiques"],
+    "month" : ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Décembre"],
+    "civ":["Mr","Mme","Mlle"],
+    "color":[["Rouge classique","#e64545"],["Vert classique","#55ed67"],["Bleu classique","#4d79e8"]]
+}

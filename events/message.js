@@ -22,7 +22,7 @@ module.exports = (client, message) => {
     if(command.owner && message.author.id !== "277100743616364544") return;
 
     //Si c'est une cmd faite sur le serv trinité
-    if (message.guild.id == "734359515788476417") {
+    if (message.channel.type != "dm" && message.guild.id == "734359515788476417") {
         if (command.status == "mod") {
             if (message.guild.member(message.author).roles.highest.comparePositionTo(message.guild.roles.cache.get("734382679914709013")) < 0) return message.channel.send("Vous n'avez pas la permition de faire cela !")
         }

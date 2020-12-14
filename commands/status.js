@@ -7,7 +7,7 @@ module.exports = {
     note:"",
     owner:true,
     execute(message, args) {
-        if (args[1] == "info") return message.channel.send("/status [status] [activity_type] [name of activity]")
+        if (!args[1]) return message.channel.send("/status [status] [activity_type] [name of activity]")
         message.client.user.setPresence({
             status:args[1],
             activity : {
