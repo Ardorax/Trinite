@@ -1,0 +1,29 @@
+{
+    "rl1top1":{
+        "name":"Gagnant du 1er tournoi de Rocket League",
+        "emoji":"<:Tournoi1_Top1:790932468148600862>"
+    },
+    "rl1top2":{
+        "name":"Deuxieme du 1er tournoi de Rocket League",
+        "emoji":"<:Tournoi1_Top2:790932649224175637>"
+    },
+    "rl1top3":{
+        "name":"Troisieme du 1er tournoi de Rocket League",
+        "emoji":"<:Tournoi1_Top3:790932665024249866>"
+    },
+    "rl2top1":{
+        "name":"Gagnant du 2er tournoi de Rocket League",
+        "emoji":"<:Tournoi2_Top1:790932258277556334>"
+    },
+    "rl2top2":{
+        "name":"Deuxieme du 2er tournoi de Rocket League",
+        "emoji":"<:Tournoi2_Top2:790932657411850290>"
+    },
+    "rl2top3":{
+        "name":"Troisieme du 2er tournoi de Rocket League",
+        "emoji":"<:Tournoi2_Top3:790932672909672488>"
+    },"nodejs": {
+        "name":"Dev node js",
+        "emoji":"<:nodejs:790939166795497532>"
+    }
+}

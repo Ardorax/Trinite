@@ -1,4 +1,3 @@
-const { fail } = require("assert");
 const SQLite = require("better-sqlite3");
 const sql = new SQLite('./trinite.sqlite');
 
@@ -266,6 +265,9 @@ module.exports = {
             x += `${pas} : ${lang.option[pas]}\\n`
         }
         console.log(x)*/
+
+        //Si l'id est un nombre on recupere la db car c'est l'id
+        if (!isNaN(db)) db = sql.prepare(`SELECT * FROM profil WHERE id=${message.author.id}`).get()
         let content = new Discord.MessageEmbed()
         .setTitle(`${lang.civ[db.civ]} ${db.name} ${db.lastname}`)
         let birthday = ""
@@ -275,8 +277,17 @@ module.exports = {
         else if (db.birth_year != 0) birthday = `Né en ${db.birth_year}`;
         content
         .setDescription(`${lang.classe[db.class]} ${db.class_number}\n${birthday}`)
-        .setColor(lang.color[db.color][1])
-        .addField("\u200B","\u200B")
+        .setColor(db.color)
+        if(db.badges == -1) {
+            content.addField("\u200B","\u200B")
+        } else {
+            let r = ""
+            for (let i = 0; i < db.badges.split(",").length ; i ++) {
+                r = r + `${ require("./badges.json")[db.badges.split(",")[i]].emoji}`
+            }
+            content.addField(r,"\u200B")
+        }
+        content
         .addField("Langue Vivante A", lang.lang[db.lva])
         .addField("Langue Vivante B", lang.lang[db.lvb])
         if (db.class == 1) {
@@ -292,6 +303,10 @@ module.exports = {
         .addField("Option", option_txt)
         .addField("Projet pour l'avenir",db.futur)
         .setThumbnail(message.client.users.cache.get(db.id).displayAvatarURL())
+        if (db.quote != -1 && db.quote != "nothing"){
+            let quote = sql.prepare("SELECT quote, author FROM quote WHERE id=?").get(db.quote)
+            content.setFooter(`\u200B\n${quote.quote}\n${quote.author}`)
+        }
         return content
     },
     async nom(message,args){
