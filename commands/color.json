@@ -34,15 +34,19 @@
             "id":"<:green:789228019104481290>"
         },"dark_green":{
             "name":"Vert foncé",
-            "hex":"#00ff80",
+            "hex":"#0080ff",
             "id":"<:dark_green:789227976755249163>"
         },"aqua":{
             "name":"Cyan",
             "hex":"#00ffff",
             "id":"<:aqua:789227948234244097>"
+        },"blue":{
+            "name":"Bleu",
+            "hex":"#0000ff",
+            "id":"<:blue:791342329843548181>"
         },"dark_blue":{
             "name":"Bleu foncé",
-            "hex":"#0000ff",
+            "hex":"#000080",
             "id":"<:dark_blue:789227966374084651>"
         },"fuchsia":{
             "name":"Rose",

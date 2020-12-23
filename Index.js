@@ -7,8 +7,8 @@ client.commands = new Discord.Collection();
 const fs = require("fs");
 
 //Token
-client.login("NzY3MDgyNjIwMzc0NjE0MDE3.X4svXA.75LhEZlMayYGE_J6ut1V0qu_aJ4") // Oficiel
-//client.login("NjUwMzU0OTA2MDE1ODU4NzI0.Xm0kKw.fV6bu4iqfK_FGFc2iybkVPYyeYc");
+//client.login("NzY3MDgyNjIwMzc0NjE0MDE3.X4svXA.75LhEZlMayYGE_J6ut1V0qu_aJ4") // Oficiel
+client.login("NjUwMzU0OTA2MDE1ODU4NzI0.Xm0kKw.fV6bu4iqfK_FGFc2iybkVPYyeYc");
 
 //Pour toute les commandes
 for (const file of fs.readdirSync('./commands/').filter(file_ => file_.endsWith('.js') && file_.toLowerCase() === file_)) {
@@ -40,7 +40,7 @@ fs.readdir('./events/', (error, f) => {
         });
 });
 
-
+/*
 client.on("message", message => {
 }); 
 

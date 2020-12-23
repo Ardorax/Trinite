@@ -33,9 +33,6 @@ module.exports = {
                 } else if(String(args[1]).toLowerCase() == "civ") {
                     await this.civ(message,args)
                     message.channel.send(module.exports.profil(message,sql.prepare(`SELECT * FROM profil WHERE id=${message.author.id}`).get()))
-                } else if(String(args[1]).toLowerCase() == "couleur") {
-                    await this.couleur(message,args)
-                    message.channel.send(module.exports.profil(message,sql.prepare(`SELECT * FROM profil WHERE id=${message.author.id}`).get()))
                 } else if(String(args[1]).toLowerCase() == "niveau") {
                     await this.niveau(message,args)
                     message.channel.send(module.exports.profil(message,sql.prepare(`SELECT * FROM profil WHERE id=${message.author.id}`).get()))
@@ -71,7 +68,7 @@ module.exports = {
                 }else if (String(args[1]).toLowerCase() == "suppression") {
                     this.delete(message, args)
                 } else {
-                    message.channel.send("Si vous souhaitez modifier votre profil, tapez /profil def [civ,nom,prenom,niveau,classe,anniversaire,lva,lvb,spe1,spe2,spe3,option,futur,couleur,suppression]");
+                    message.channel.send("Si vous souhaitez modifier votre profil, tapez /profil def [civ,nom,prenom,niveau,classe,anniversaire,lva,lvb,spe1,spe2,spe3,option,futur,suppression]");
                 }
             } else {
 
@@ -116,13 +113,6 @@ module.exports = {
                     }
 
                     //message.channel.send(module.exports.profil(message,sql.prepare(`SELECT * FROM profil WHERE id=${message.author.id}`).get()));
-
-                    while (fail < max_fail) {
-                        r = await this.couleur(message,[])
-                        if (r == 1) fail = fail + 1
-                        else if (r == 2) return message.channel.send(fail_msg)
-                        else break;
-                    }
 
                     while (fail < max_fail) {
                         n = await this.niveau(message,[])
@@ -303,7 +293,7 @@ module.exports = {
         .addField("Option", option_txt)
         .addField("Projet pour l'avenir",db.futur)
         .setThumbnail(message.client.users.cache.get(db.id).displayAvatarURL())
-        if (db.quote != -1 && db.quote != "nothing"){
+        if (db.quote != -1){
             let quote = sql.prepare("SELECT quote, author FROM quote WHERE id=?").get(db.quote)
             content.setFooter(`\u200B\n${quote.quote}\n${quote.author}`)
         }
@@ -415,7 +405,7 @@ module.exports = {
                 message.channel.send("Votre couleur doit etre représenté par un chiffre")
                 answer = 1
             } else {
-                sql.prepare(`UPDATE profil SET color = ? WHERE id = ${message.author.id}`).run(args[2]);
+                sql.prepare(`UPDATE profil SET color = ? WHERE id = ${message.author.id}`).run(lang.color[args[2]][1]);
                 message.client.guilds.cache.get("767084336737943582").channels.cache.get("784480920287707197").send(`${message.author} a choisit la couleur :\n${args[2]}`);
             }
         } else {
@@ -426,7 +416,7 @@ module.exports = {
                     message.channel.send("Votre couleur doit etre représenté par un chiffre")
                     answer = 1
                 } else {
-                    sql.prepare(`UPDATE profil SET color = ? WHERE id = ${message.author.id}`).run(collected.first().content);
+                    sql.prepare(`UPDATE profil SET color = ? WHERE id = ${message.author.id}`).run(lang.color[collected.first().content][1]);
                     message.client.guilds.cache.get("767084336737943582").channels.cache.get("784480920287707197").send(`${message.author} a choisit la couleur :\n${collected.first().content}`);
                 }
             })
