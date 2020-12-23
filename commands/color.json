@@ -1,0 +1,77 @@
+{
+    "b":{
+        "red":{
+            "name":"Rouge basique",
+            "hex":"#e64545"
+        },"green":{
+            "name":"Vert basique",
+            "hex":"#55ed67"
+        },"blue":{
+            "name":"Bleu basique",
+            "hex":"#4d79e8"
+        }
+    }
+    ,"c": {
+        "red":{
+            "name":"Rouge",
+            "hex":"#ff0000",
+            "id":"<:red:789228053133787218>"
+        },"dark_red":{
+            "name":"Rouge foncé",
+            "hex":"#800000",
+            "id":"<:dark_red:789227987550994443>"
+        },"orange":{
+            "name":"Orange",
+            "hex":"#ff8000",
+            "id":"<:orange:789228030907908187>"
+        },"yellow":{
+            "name":"Jaune",
+            "hex":"#ffff00",
+            "id":"<:yellow:789228084234158090>"
+        },"green":{
+            "name":"Vert",
+            "hex":"#00ff00",
+            "id":"<:green:789228019104481290>"
+        },"dark_green":{
+            "name":"Vert foncé",
+            "hex":"#0080ff",
+            "id":"<:dark_green:789227976755249163>"
+        },"aqua":{
+            "name":"Cyan",
+            "hex":"#00ffff",
+            "id":"<:aqua:789227948234244097>"
+        },"blue":{
+            "name":"Bleu",
+            "hex":"#0000ff",
+            "id":"<:blue:791342329843548181>"
+        },"dark_blue":{
+            "name":"Bleu foncé",
+            "hex":"#000080",
+            "id":"<:dark_blue:789227966374084651>"
+        },"fuchsia":{
+            "name":"Rose",
+            "hex":"#ff00ff",
+            "id":"<:fuchsia:789227999483920385>"
+        },"purple":{
+            "name":"Violet",
+            "hex":"#800080",
+            "id":"<:purple:789228040831238204>"
+        },"white":{
+            "name":"Blanc",
+            "hex":"#ffffff",
+            "id":"<:white:789228072800092170>"
+        },"silver":{
+            "name":"Argent",
+            "hex":"#C0C0C0",
+            "id":"<:silver:789228063120556062>"
+        },"gray":{
+            "name":"Gris",
+            "hex":"#808080",
+            "id":"<:gray:789228008900132884>"
+        },"black":{
+            "name":"Noir",
+            "hex":"#000000",
+            "id":"<:black:789227957813116930>"
+        }
+    }
+}

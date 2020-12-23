@@ -1,5 +1,16 @@
 const Discord = require('discord.js');
 const cooldowns = new Discord.Collection();
+
+//temps de recup avant autre recompence
+const win_cooldown = new Set()
+
+const SQLite = require("better-sqlite3");
+const sql = new SQLite('./trinite.sqlite');
+
+function random (min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
 module.exports = (client, message) => {
     //Si c'est un bot qui fait la cmd
     if (message.author.bot) return;
@@ -16,7 +27,30 @@ module.exports = (client, message) => {
 
     const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName))
 
-    if(!command) return;
+    //Gain aléatoire
+    if(!command) {
+
+        if (message.channel.type != "text") return;
+        let person = sql.prepare("SELECT inv_quote FROM profil WHERE id=?").get(message.author.id)
+        if (!person) return;
+
+        if (win_cooldown.has(message.author.id)) return;
+
+        win_cooldown.add(message.author.id)
+
+        if (random(1, person.inv_quote.split(",").length) == 1 && message.content.length > 9 && sql.prepare("SELECT value FROM main WHERE key=?").get("drop_quote").value == "true") {
+            let id_quote = require("../commands/inventory").drop_quote(message.author.id)
+            if (id_quote != -1) {
+                require("../commands/give").give_quote(message.author.id,id_quote);
+                client.guilds.cache.get("767084336737943582").channels.cache.get("791305646461026314").send(`${message.author} ${message.author.username} a drop : ${sql.prepare("SELECT quote FROM quote WHERE id=?").get(id_quote).quote}`)
+            }
+        }
+
+        setTimeout(() => win_cooldown.delete(message.author.id), 60000 * 5);
+
+
+        return;
+    }
 
     //Si c'est une de mes cmd
     if(command.owner && message.author.id !== "277100743616364544") return;

@@ -7,11 +7,11 @@ client.commands = new Discord.Collection();
 const fs = require("fs");
 
 //Token
-client.login("NzY3MDgyNjIwMzc0NjE0MDE3.X4svXA.75LhEZlMayYGE_J6ut1V0qu_aJ4") // Oficiel
-//client.login("NjUwMzU0OTA2MDE1ODU4NzI0.Xm0kKw.fV6bu4iqfK_FGFc2iybkVPYyeYc");
+//client.login("NzY3MDgyNjIwMzc0NjE0MDE3.X4svXA.75LhEZlMayYGE_J6ut1V0qu_aJ4") // Oficiel
+client.login("NjUwMzU0OTA2MDE1ODU4NzI0.Xm0kKw.fV6bu4iqfK_FGFc2iybkVPYyeYc");
 
 //Pour toute les commandes
-for (const file of fs.readdirSync('./commands/').filter(file_ => file_.endsWith('.js') && !file_.startsWith("MOD"))) {
+for (const file of fs.readdirSync('./commands/').filter(file_ => file_.endsWith('.js') && file_.toLowerCase() === file_)) {
 	let command = require(`./commands/${file}`);
 
 	
@@ -41,24 +41,7 @@ fs.readdir('./events/', (error, f) => {
 });
 
 /*
-const SQLite = require("better-sqlite3");
-const sql = new SQLite('./trinite.sqlite');
-
-/*
 client.on("message", message => {
-    if(message.author.bot) return;
-
-    const filter = msg => !msg.author.bot
-
-    //message.client.guilds.cache.get("767084336737943582").channels.cache.get("784480920287707197").send(`${message.author} a choisit le nom :`)
-
-    if (message.content.startsWith("/h")) {
-
-        message.channel.send("Bonjour, envoie par message ton nom de famille")
-        message.channel.awaitMessages(filter, {max:1, time: 1000})
-        .then(collected => message.channel.send(`Ton nom de famille est : ${collected.first().content}`))
-        .catch(col => message.channel.send("Stop"))}
-    
 }); 
 
 /*
