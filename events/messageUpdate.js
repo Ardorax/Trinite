@@ -8,6 +8,6 @@ module.exports = async (client, start,end) => {
     } else {
         if (end.channel.type == "dm") return;
         if(end.author.bot) return;
-        client.guilds.cache.get("767084336737943582").channels.cache.get("768077780516601877").send(`${start.author} ${start.channel.name}\n${start.content}\n${end.content}`)
+        client.guilds.cache.get("767084336737943582").channels.cache.get("768077780516601877").send(`${start.author} ${start.author.username} ${start.channel.name}\n${start.content}\n${end.content}`)
     }
 };

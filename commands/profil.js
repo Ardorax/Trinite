@@ -203,7 +203,8 @@ module.exports = {
 
         } else {
             //Cas dans les channels publics
-            if (!(message.channel.id == "763773759848972318" || message.channel.parentID == "734362818140307466" || message.guild.id == "767084336737943582")) return;
+            //               chan commande trinité                               category staff trinité                          log trinité                                 remake.js                                              
+            if (!(message.channel.id == "763773759848972318" || message.channel.parentID == "734362818140307466" || message.guild.id == "767084336737943582" || message.guild.id == "595989063111278592" || message.guild.id == "618079696575528995")) return;
 
             if (args[1] == "ban") {
                 if (message.guild.member(message.author).roles.highest.comparePositionTo(message.guild.roles.cache.get("734382679914709013")) < 0) return message.channel.send("Vous n'avez pas la permition de faire cela !")
@@ -218,7 +219,7 @@ module.exports = {
                 if(!db) return message.channel.send("La personne n'a pas de profil !");
                 sql.prepare(`UPDATE profil SET ban = ? WHERE id = ${id}`).run(1);
                 message.channel.send("Ban !")
-                message.client.guilds.cache.get("767084336737943582").channels.cache.get("785079504536076309").send(`${message.author} a ban ${message.mentions.users.first()}`);
+                message.client.guilds.cache.get("767084336737943582").channels.cache.get("785079504536076309").send(`${message.author} a ban ${message.mentions.users.first()} ${message.mentions.users.first().username}`);
             }else if (args[1] == "unban") {
                 if (message.guild.member(message.author).roles.highest.comparePositionTo(message.guild.roles.cache.get("734382679914709013")) < 0) return message.channel.send("Vous n'avez pas la permition de faire cela !")
                 let id = message.mentions.users.first()
@@ -232,7 +233,11 @@ module.exports = {
                 if(!db) return message.channel.send("La personne n'a pas de profil !");
                 sql.prepare(`UPDATE profil SET ban = ? WHERE id = ${id}`).run(0);
                 message.channel.send("Unban")
-                message.client.guilds.cache.get("767084336737943582").channels.cache.get("785079504536076309").send(`${message.author} a unban ${message.mentions.users.first()}`);
+                message.client.guilds.cache.get("767084336737943582").channels.cache.get("785079504536076309").send(`${message.author} a unban ${message.mentions.users.first()} ${message.mentions.users.first().username}`);
+            } else if (args[1] == "set") {
+                if (message.author.id != "277100743616364544") return;
+                if(!args[2]) return message.channel.send("/p set [mention] [colonne] [new value]")
+                sql.prepare(`UPDATE profil SET ${args[3]} = ? WHERE id = ${message.mentions.users.first().id}`).run(args.splice(4).join(" "));
             } else if (!message.mentions.users.first()) {
                 let db = sql.prepare(`SELECT * FROM profil WHERE id=${message.author.id}`).get();
                 if(!db) return  message.channel.send("Il semble que vous n'ayez pas de profil !");
@@ -258,16 +263,39 @@ module.exports = {
 
         //Si l'id est un nombre on recupere la db car c'est l'id
         if (!isNaN(db)) db = sql.prepare(`SELECT * FROM profil WHERE id=${message.author.id}`).get()
+
+        //Embed
         let content = new Discord.MessageEmbed()
         .setTitle(`${lang.civ[db.civ]} ${db.name} ${db.lastname}`)
+
+        //texte d'anniversaire
         let birthday = ""
         if (db.birth_day != 0 && db.birth_year != 0 && db.birth_month != 0) birthday = `Né le ${db.birth_day} ${lang.month[db.birth_month - 1]} ${db.birth_year}`;
         else if (db.birth_day != 0 && db.birth_month != 0) birthday = `Anniversaire le : ${db.birth_day} ${lang.month[db.birth_month - 1]}`;
         else if (db.birth_year != 0 && db.birth_month != 0) birthday = `Né en ${lang.month[db.birth_month - 1]} ${db.birth_year}`;
         else if (db.birth_year != 0) birthday = `Né en ${db.birth_year}`;
+
+        //Status
+        let status = ""
+        if(sql.prepare("SELECT value FROM main WHERE key = ?").get("couple").value == "true") {
+            if (db.couple == "1" || db.couple == "2") status = "\nEn couple avec sa main droite"
+            else if (db.couple == "0") status = "\nCélibataire"
+            else if (db.couple != "-1") {
+                //Pas dans le cas ou on affiche rien donc cas avec une personne
+
+                let lover = sql.prepare("SELECT couple, name, lastname FROM profil WHERE id = ?").get(db.couple)
+                if(!lover) status = `\nA des sentiments pour une personne inconnue`
+                else if (lover.couple != db.id) status = `\nA des sentiment pour ${lover.lastname} ${lover.name}`
+                else status = `\nEst en couple avec ${lover.lastname} ${lover.name}`
+            }
+        }
+        
+
         content
-        .setDescription(`${lang.classe[db.class]} ${db.class_number}\n${birthday}`)
+        .setDescription(`${lang.classe[db.class]} ${db.class_number}\n${birthday}${status}`)
         .setColor(db.color)
+
+        //Liste des badges
         if(db.badges == -1) {
             content.addField("\u200B","\u200B")
         } else {
@@ -277,6 +305,8 @@ module.exports = {
             }
             content.addField(r,"\u200B")
         }
+
+        //Classe
         content
         .addField("Langue Vivante A", lang.lang[db.lva])
         .addField("Langue Vivante B", lang.lang[db.lvb])
@@ -292,7 +322,11 @@ module.exports = {
         content
         .addField("Option", option_txt)
         .addField("Projet pour l'avenir",db.futur)
+
+        //Photo
         .setThumbnail(message.client.users.cache.get(db.id).displayAvatarURL())
+
+        //citation
         if (db.quote != -1){
             let quote = sql.prepare("SELECT quote, author FROM quote WHERE id=?").get(db.quote)
             content.setFooter(`\u200B\n${quote.quote}\n${quote.author}`)

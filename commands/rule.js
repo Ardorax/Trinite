@@ -20,7 +20,12 @@ module.exports = {
             message.channel.send("Regle changée !")
         } else if (args[1] == "show") {
             message.channel.send(sql.prepare("SELECT value FROM main WHERE key=?").get(args[2]).value)
+        } else {
+            message.channel.send("/rule [set,show] [rule] (value ...)")
         }
     }
         
 }
+
+// Code de recup de la regle
+// sql.prepare("SELECT value FROM main WHERE key = ?").get("rule").value
