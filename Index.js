@@ -30,22 +30,27 @@ for (const file of fs.readdirSync('./commands/').filter(file_ => file_.endsWith(
 
 //Chargement des events liée a discord
 fs.readdir('./events/', (error, f) => {
-    if (error) { return console.error(error); }
-        console.log(`${f.length} events chargés`);
-  
-        f.forEach((f) => {
-            let events = require(`./events/${f}`);
-            let event = f.split('.')[0];
-            client.on(event, events.bind(null, client));
-        });
+    if (error) return console.error(error);
+
+    console.log(`${f.length} events chargés`);
+
+    f.forEach((f) => {
+        let events = require(`./events/${f}`);
+        let event = f.split('.')[0];
+        client.on(event, events.bind(null, client));
+    });
 });
 
-/*
-client.on("message", message => {
-}); 
 
 /*
 console.log(sql.prepare("SELECT welcome FROM main WHERE id=0").get())
+
+// Filtre pour dire si la personne peux recevoir une couleur
+    
+client.on("message",message => {
+    message.channel.send()
+})
+
 */
 
 
