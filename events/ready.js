@@ -3,15 +3,18 @@ const parametre = require("../paramtre.json")
 const SQLite = require("better-sqlite3");
 const sql = new SQLite('./trinite.sqlite');
 
-//Pose une question et retourne l'id du gagant si il y en a un
-function ask(client, question, reponce, time) {
+const week_end_hour = 17
+const week_hour = 12
 
-    //Filtre des réponces
+//Pose une question et retourne l'id du gagant si il y en a un
+function ask(client, question, reponse, time) {
+
+    //Filtre des réponses
     let filter = messages => {
 
         if (messages.author.bot) return false;
         
-        if (String(messages.content).toLowerCase().sansAccent() == reponce.toLowerCase().sansAccent()) {
+        if (String(messages.content).toLowerCase().sansAccent() == reponse.toLowerCase().sansAccent()) {
             return true
         } else {
             return false
@@ -25,15 +28,19 @@ function ask(client, question, reponce, time) {
         //Attente des messages
         channel(client).awaitMessages(filter, {time:time, max:1, errors:["time"]})
         .then(collected => {
+            //Réaction sur le message
+            collected.first().react("✅")
+
+            //Texte du message
             let user_answer_counter = sql.prepare(`SELECT answer_count FROM tiny_profil WHERE id=?`).get(collected.first().author.id);
-            let user_count_text = "C'est la première fois qu'il est le premier à donner la bonne réponce"
-            if(user_answer_counter) user_count_text = `C'est la ${user_answer_counter.answer_count + 1}eme fois qu'il donne une bonne réponce`
-            message.then(m => m.edit(`${question}\n${collected.first().author} a trouvé la bonne réponce !\n${user_count_text}`))
+            let user_count_text = "C'est la première fois qu'il est le premier à donner la bonne réponse"
+            if(user_answer_counter) user_count_text = `C'est la ${user_answer_counter.answer_count + 1}eme fois qu'il donne une bonne réponse`
+            message.then(m => m.edit(`${question}\n${collected.first().author} a trouvé la bonne réponse !\n${user_count_text}`))
             //collected.first().author.id
             resolve(collected.first().author.id)
         })
         .catch(e => {
-            message.then(m => m.edit(`${question}\nPersonne a trouvé la bonne réponce !`))
+            message.then(m => m.edit(`${question}\nPersonne a trouvé la bonne réponse ! C'était : ${reponse}`))
             resolve(-1)
         })
     })
@@ -44,7 +51,7 @@ function ask(client, question, reponce, time) {
 //Retourne une question qui n'a jamais été utilisé
 function question() {
     let r = sql.prepare(`SELECT question, answer, use FROM question_list WHERE use=${0}`).get();
-    //sql.prepare(`UPDATE "question_list" SET use = ? WHERE question = ?`).run(r.use + 1,r.question);
+    sql.prepare(`UPDATE "question_list" SET use = ? WHERE question = ?`).run(r.use + 1,r.question);
     delete r.use
     return r
 }
@@ -69,8 +76,8 @@ function set_question(client, time) {
                 if(!wallet) require("../commands/money").create_accont(id)
                 require("../commands/money").add_money(id,Number(sql.prepare(`SELECT value FROM main WHERE key=?`).get("question_reward").value))
                 sql.prepare(`UPDATE tiny_profil SET answer_count = ? WHERE id = ${id}`).run(sql.prepare(`SELECT answer_count FROM tiny_profil WHERE id=?`).get(id).answer_count + 1);
-                client.guilds.cache.get("767084336737943582").channels.cache.get("799375039933579315").send(`<@${id}> a donné la bonne réponce`)
-            } else client.guilds.cache.get("767084336737943582").channels.cache.get("799375039933579315").send(`Personne n'a trouvé la réponce`)
+                client.guilds.cache.get("767084336737943582").channels.cache.get("799375039933579315").send(`<@${id}> a donné la bonne réponse`)
+            } else client.guilds.cache.get("767084336737943582").channels.cache.get("799375039933579315").send(`Personne n'a trouvé la réponse`)
         })
 
         resolve()
@@ -93,6 +100,32 @@ function channel(client) {
     } else {
         return client.guilds.cache.get("734359515788476417").channels.cache.get("784334242540683314")
     }
+}
+
+function all_question(client, middle_question_max_time, last_question_time) {
+
+    return new Promise(async resolve => {
+
+        //Definition du jour pour savoir le nb de question
+        let nb_question = 0
+        if(new Date().getUTCDay() == 0 || new Date().getUTCDay() == 6) nb_question = Number(sql.prepare(`SELECT value FROM main WHERE key=?`).get("nb_question_weekend").value)
+        else nb_question = Number(sql.prepare(`SELECT value FROM main WHERE key=?`).get("nb_question_week").value)
+
+        //Pose des questions le nombre nb_ask de fois
+        for( let nb_ask = 1; nb_ask <= nb_question ; nb_ask++) {
+
+            let time = middle_question_max_time
+            if(nb_question == nb_ask) time = last_question_time
+
+            //On pose la question
+            let r = set_question(client, time)
+            await r.then(e => {})
+        }
+
+        //Fin de la procedure donc on résout la promesse
+        resolve()
+
+    })
 }
 
 module.exports = async (client) => {
@@ -119,8 +152,9 @@ module.exports = async (client) => {
 
     //Initialisation de la premiere boucles
     //Calendrier semaine 13h00, max 5 min de rep puis 1heure, week end 18h00
-    let now = new Date(2021, 0, 15, 12, 59, 58)
+    let now = new Date()
     console.log(`Nous somme le : ${now.toString()}`)
+    console.log(`Nous somme le : ${now.toUTCString()}`)
     
     //Decalage horaire
     //now.setHours(now.getHours() + 1)
@@ -129,19 +163,19 @@ module.exports = async (client) => {
     //On détermine si le prochain jour(le prochain moment ou on lance une question) est le week end ou semaine
 
     //Si on a déja dépasser l'heure du jour
-    if ((now.getDay() == 0 && now.getHours() >= 18) || (now.getDay() == 1 && now.getHours() >= 13) || (now.getDay() == 2 && now.getHours() >= 13) || (now.getDay() == 3 && now.getHours() >= 13) || (now.getDay() == 4 && now.getHours() >= 13) || (now.getDay() == 5 && now.getHours() >= 13) || (now.getDay() == 6 && now.getHours() >= 18)) {
-        next_time.setDate(now.getDate() + 1)
+    if ((now.getUTCDay() == 0 && now.getUTCHours() >= week_end_hour) || ( now.getUTCDay() >= 1 && now.getUTCDay() <= 5 && now.getUTCHours() >= week_hour) || (now.getUTCDay() == 6 && now.getUTCHours() >= week_end_hour)) {
+        next_time.setUTCDate(now.getUTCDate() + 1)
 
         //Si le landemain la question est a 13h 
-        if (now.getDay() <= 4) next_time.setHours(13,0,0,0)
-        else next_time.setHours(18,0,0,0)
+        if (now.getUTCDay() <= 4) next_time.setUTCHours(week_hour,0,0,0)
+        else next_time.setUTCHours(week_end_hour,0,0,0)
     } else {
 
         //cas ou le bot demare avant le moment de la question
 
         //Si on est un jour de semaine
-        if (now.getDay() >= 1 && now.getDay() <= 5) next_time.setHours(13,0,0,0)
-        else next_time.setHours(18,0,0,0)
+        if (now.getUTCDay() >= 1 && now.getUTCDay() <= 5) next_time.setUTCHours(week_hour,0,0,0)
+        else next_time.setUTCHours(week_end_hour,0,0,0)
     }
 
     //Decallage horaire
@@ -152,54 +186,42 @@ module.exports = async (client) => {
     //Attente avant le premier déclanchement
     setTimeout(async () => {
 
-        console.log("Premier tirage")
-
-        //Definition du jour pour savoir le nb de question
-        let nb_question = 0
-        if(new Date().getDay() == 0 || new Date().getDay() == 6) nb_question = Number(sql.prepare(`SELECT value FROM main WHERE key=?`).get("nb_question_weekend").value)
-        else nb_question = Number(sql.prepare(`SELECT value FROM main WHERE key=?`).get("nb_question_week").value)
-
-        //Pose la premiere question et attend la réponce le nb de fois 
-        for( let nb_ask = 0; nb_ask < nb_question ; nb_ask++) {
-
-            let max_time = (60000 * 5)
-            if(nb_question - 1 == nb_ask) max_time = (60000 * 60)
-
-            //On pose la question
-            let r = set_question(client, max_time)
-            await r.then(e => {})
-        }
+        console.log("Premiere serie de question")
+        await all_question(client, 600000, 3600000)
+        console.log("Fin de la premiere série de question")
 
         //Definir a quel heure on lance le landemain
-        let next_hour = 18
-        if(now.getDay() <=4) next_hour = 13
-        let next_time = new Date(new Date().setDate(new Date().getDate() + 1))
+        let next_hour = week_end_hour
+        if(now.getUTCDay() <=4) next_hour = week_hour
+        let next_time = new Date(new Date().setUTCDate(new Date().getUTCDate() + 1))
+        next_time.setUTCHours(next_hour)
 
-        console.log("Premiere attente")
-        channel(client).send(`Prochaine question demain a ${next_hour} heures !`)
-        await waiting(next_time.setHours(next_hour) - new Date())
+        console.log(`Prochaine question demain a ${next_hour} heures utc !`);
+
+        channel(client).send(`Prochaine question demain a ${next_hour + 1} heures !`);
+        await waiting(next_time - new Date())
+        //await waiting(10000)
+
         console.log("Fin de la premiere attente")
 
         //Boucle pour les fois d'apres 
-        for (let jour = 0; jour < 5; jour++) {
+        for (let jour = 0; jour < 3; jour++) {
 
-            for( let nb_ask = 0; nb_ask < nb_question ; nb_ask++) {
-
-                let max_time = (60000 * 5)
-                if(nb_question - 1 == nb_ask) max_time = (60000 * 60)
-    
-                //On pose la question
-                let r = set_question(client, max_time)
-                await r.then(e => {})
-            }
+            console.log("Début d'une série de question")
+            await all_question(client, 600000, 3600000)
+            console.log("Fin d'une série de question")
 
             //Definir a quel heure on lance le landemain
-            let next_hour = 18
-            if(now.getDay() <=4) next_hour = 13
-            let next_time = new Date(new Date().setDate(new Date().getDate() + 1))
+            let next_hour = week_end_hour
+            if(now.getUTCDay() <=4) next_hour = week_hour
+            let next_time = new Date(new Date().setUTCDate(new Date().getUTCDate() + 1))
+            next_time.setUTCHours(next_hour)
 
-            channel(client).send(`Prochaine question demain a ${next_hour} heures !`)
-            await waiting(next_time.setHours(next_hour) - new Date())
+            console.log(`Prochaine question demain a ${next_hour} heures utc !`);
+
+            channel(client).send(`Prochaine question demain a ${next_hour + 1} heures !`);
+            await waiting(next_time - new Date())
+            //await waiting(3000)
         }
 
     }, next_time - now);
