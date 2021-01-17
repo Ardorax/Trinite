@@ -6,6 +6,10 @@ const sql = new SQLite('./trinite.sqlite');
 const week_end_hour = 17
 const week_hour = 12
 
+function random (min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
 //Pose une question et retourne l'id du gagant si il y en a un
 function ask(client, question, reponse, time) {
 
@@ -14,7 +18,7 @@ function ask(client, question, reponse, time) {
 
         if (messages.author.bot) return false;
         
-        if (String(messages.content).toLowerCase().sansAccent() == reponse.toLowerCase().sansAccent()) {
+        if (String(messages.content).toLowerCase().replace("-"," ").sansAccent() == reponse.toLowerCase().replace("-"," ").sansAccent()) {
             return true
         } else {
             return false
@@ -50,7 +54,13 @@ function ask(client, question, reponse, time) {
 
 //Retourne une question qui n'a jamais été utilisé
 function question() {
-    let r = sql.prepare(`SELECT question, answer, use FROM question_list WHERE use=${0}`).get();
+    //Total de question disponible
+    let total_question = sql.prepare(`SELECT COUNT(use) FROM question_list WHERE use = ${0}`).get()["COUNT(use)"]
+
+    //rng
+    let rng = random(1,total_question) - 1
+
+    let r = sql.prepare(`SELECT question, answer, use FROM question_list WHERE use = ? LIMIT 1 OFFSET ${rng}`).get("0");
     sql.prepare(`UPDATE "question_list" SET use = ? WHERE question = ?`).run(r.use + 1,r.question);
     delete r.use
     return r
@@ -72,9 +82,9 @@ function set_question(client, time) {
 
             //Si une personne a répondu
             if(id != -1) {
-                let wallet = require("../commands/money").has_accont(id)
-                if(!wallet) require("../commands/money").create_accont(id)
-                require("../commands/money").add_money(id,Number(sql.prepare(`SELECT value FROM main WHERE key=?`).get("question_reward").value))
+                let wallet = require("../commands/profil").has_profil(id)
+                if(wallet) require("../commands/money").add_money(id,Number(sql.prepare(`SELECT value FROM main WHERE key=?`).get("question_reward").value))
+                if(!sql.prepare(`SELECT answer_count FROM tiny_profil WHERE id=${id}`).get()) sql.prepare(`INSERT INTO tiny_profil (id) VALUES (?)`).run(id)
                 sql.prepare(`UPDATE tiny_profil SET answer_count = ? WHERE id = ${id}`).run(sql.prepare(`SELECT answer_count FROM tiny_profil WHERE id=?`).get(id).answer_count + 1);
                 client.guilds.cache.get("767084336737943582").channels.cache.get("799375039933579315").send(`<@${id}> a donné la bonne réponse`)
             } else client.guilds.cache.get("767084336737943582").channels.cache.get("799375039933579315").send(`Personne n'a trouvé la réponse`)
@@ -205,7 +215,7 @@ module.exports = async (client) => {
         console.log("Fin de la premiere attente")
 
         //Boucle pour les fois d'apres 
-        for (let jour = 0; jour < 3; jour++) {
+        for (let jour = 0; jour < 150; jour++) {
 
             console.log("Début d'une série de question")
             await all_question(client, 600000, 3600000)
@@ -250,8 +260,3 @@ String.prototype.sansAccent = function(){
      
     return str;
 }
-
-
-
-
-

@@ -89,7 +89,12 @@ module.exports = {
 
                     await message.channel.send("Très bien, merci d'envoyer par message les réponses aux questions que je vous demande")
 
-                    sql.prepare(`INSERT INTO profil (id) VALUES (?)`).run(message.author.id)
+                    //Récuperation des bonnes réponce aux quiz pour donner l'argent
+                    let money = 0
+                    let tiny = sql.prepare(`SELECT answer_count FROM tiny_profil WHERE id=${message.author.id}`).get()
+                    if(tiny) money = Number(tiny.answer_count) * 10
+
+                    sql.prepare(`INSERT INTO profil (id, money) VALUES (?, ?)`).run(message.author.id, money)
 
                     while (fail < max_fail) {
                         r = await this.nom(message,[])
@@ -802,5 +807,9 @@ module.exports = {
         } else message.channel.send("Si vous souhaitez supprimer votre profil, tapez /p suppression valide")
 
         return answer
+    },
+    has_profil(id) {
+        let profil = sql.prepare(`SELECT name, lastname FROM profil WHERE id=${id}`).get()
+        return profil ? true : false
     }
 }

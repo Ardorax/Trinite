@@ -16,18 +16,15 @@ module.exports = {
         }
     },
     has_accont(id) {
-        let wallet = sql.prepare(`SELECT money FROM tiny_profil WHERE id=${id}`).get()
+        let wallet = sql.prepare(`SELECT money FROM profil WHERE id=${id}`).get()
         return wallet ? true : false
-    },
-    create_accont (id) {
-        sql.prepare(`INSERT INTO tiny_profil (id) VALUES (?)`).run(id)
     },
     //Cb d'argent il a
     money(id) {
-        return Number(sql.prepare(`SELECT money FROM tiny_profil WHERE id=${id}`).get().money)
+        return Number(sql.prepare(`SELECT money FROM profil WHERE id=${id}`).get().money)
     },
     add_money(id, amount) {
-        sql.prepare(`UPDATE tiny_profil SET money = ? WHERE id = ${id}`).run(this.money(id) + amount);
+        sql.prepare(`UPDATE profil SET money = ? WHERE id = ${id}`).run(this.money(id) + amount);
     }
         
 }
