@@ -4,7 +4,7 @@ const SQLite = require("better-sqlite3");
 const sql = new SQLite('./trinite.sqlite');
 
 const week_end_hour = 17
-const week_hour = 12
+const week_hour = 11
 
 function random (min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
@@ -203,10 +203,12 @@ module.exports = async (client) => {
         //Definir a quel heure on lance le landemain
         let next_hour = week_end_hour
         if(now.getUTCDay() <=4) next_hour = week_hour
-        let next_time = new Date(new Date().setUTCDate(new Date().getUTCDate() + 1))
-        next_time.setUTCHours(next_hour)
+        let next_time = new Date()
+        next_time.setUTCDate(now.getUTCDate() + 1)
+        next_time.setUTCHours(next_hour, 0 ,0 ,0)
 
         console.log(`Prochaine question demain a ${next_hour} heures utc !`);
+        console.log(next_time.toUTCString())
 
         channel(client).send(`Prochaine question demain a ${next_hour + 1} heures !`);
         await waiting(next_time - new Date())
@@ -224,10 +226,12 @@ module.exports = async (client) => {
             //Definir a quel heure on lance le landemain
             let next_hour = week_end_hour
             if(now.getUTCDay() <=4) next_hour = week_hour
-            let next_time = new Date(new Date().setUTCDate(new Date().getUTCDate() + 1))
-            next_time.setUTCHours(next_hour)
+            let next_time = new Date()
+            next_time.setUTCDate(now.getUTCDate() + 1)
+            next_time.setUTCHours(next_hour, 0 ,0 ,0)
 
             console.log(`Prochaine question demain a ${next_hour} heures utc !`);
+            console.log(next_time.toUTCString())
 
             channel(client).send(`Prochaine question demain a ${next_hour + 1} heures !`);
             await waiting(next_time - new Date())
