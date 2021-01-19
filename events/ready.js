@@ -201,6 +201,7 @@ module.exports = async (client) => {
         console.log("Fin de la premiere série de question")
 
         //Definir a quel heure on lance le landemain
+        now = new Date()
         let next_hour = week_end_hour
         if(now.getUTCDay() <=4) next_hour = week_hour
         let next_time = new Date()
