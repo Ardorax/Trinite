@@ -208,8 +208,8 @@ module.exports = async (client) => {
         next_time.setUTCDate(now.getUTCDate() + 1)
         next_time.setUTCHours(next_hour, 0 ,0 ,0)
 
-        console.log(`Prochaine question demain a ${next_hour} heures utc !`);
-        console.log(next_time.toUTCString())
+        console.log(`Prochaine question demain a ${next_hour} heures utc ! ${next_time.toUTCString()}`);
+        console.log(`Attente : ${next_time - new Date()} next : ${next_time} now : ${new Date()}`)
 
         channel(client).send(`Prochaine question demain a ${next_hour + 1} heures !`);
         await waiting(next_time - new Date())
@@ -218,29 +218,45 @@ module.exports = async (client) => {
         console.log("Fin de la premiere attente")
 
         //Boucle pour les fois d'apres 
-        for (let jour = 0; jour < 150; jour++) {
+        for (let jour = 0; jour < 15; jour++) {
+
+            if(jour > 10) client.guilds.cache.get("767084336737943582").channels.cache.get("801837244859940944").send("<@277100743616364544> les questions")
 
             console.log("Début d'une série de question")
             await all_question(client, 600000, 3600000)
             console.log("Fin d'une série de question")
 
             //Definir a quel heure on lance le landemain
+            now = new Date()
             let next_hour = week_end_hour
             if(now.getUTCDay() <=4) next_hour = week_hour
             let next_time = new Date()
             next_time.setUTCDate(now.getUTCDate() + 1)
             next_time.setUTCHours(next_hour, 0 ,0 ,0)
 
-            console.log(`Prochaine question demain a ${next_hour} heures utc !`);
-            console.log(next_time.toUTCString())
+            console.log(`Prochaine question demain a ${next_hour} heures utc ! ${next_time.toUTCString()}`);
+            console.log(`Attente : ${next_time - new Date()} next : ${next_time} now : ${new Date()}`)
 
             channel(client).send(`Prochaine question demain a ${next_hour + 1} heures !`);
+
+            //Sécurité 
+            if (next_time - new Date() <= 72000000) {
+                client.guilds.cache.get("767084336737943582").channels.cache.get("801837244859940944").send("<@277100743616364544> Ya un bug dans le timer je me freze")
+                break;
+            }
+            if (sql.prepare(`SELECT value FROM main WHERE key= ?`).get("quiz").value == "false") {
+                client.guilds.cache.get("767084336737943582").channels.cache.get("801837244859940944").send("<@277100743616364544> J'arrete car rule quizz = false")
+                break;
+            }
+            if(client.user.presence.status != "online") {
+                client.guilds.cache.get("767084336737943582").channels.cache.get("801837244859940944").send("<@277100743616364544> bot pas online boucle quiz break")
+                break
+            }
             await waiting(next_time - new Date())
             //await waiting(3000)
         }
 
     }, next_time - now);
-
 }
 
 

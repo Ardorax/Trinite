@@ -18,7 +18,7 @@ module.exports = {
     name:"inventaire",
     type:"profil",
     description:"Profil des personnes",
-    usage: "(une personne)",
+    usage: "(couleur, citation)",
     note:"",
     aliases:["inv"],
     async execute(message, args) {

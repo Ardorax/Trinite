@@ -3,9 +3,9 @@ const sql = new SQLite('./trinite.sqlite');
 
 module.exports = {
     name:"couple",
-    type:"mod",
+    type:"user",
     description:"Gestion des couples",
-    usage: "",
+    usage: "serveur : [mention], message_privé : (0,1)",
     note:"",
     execute(message, args) {
 

@@ -13,7 +13,7 @@ module.exports = {
     name:"profil",
     type:"profil",
     description:"Profil des personnes",
-    usage: "(une personne)",
+    usage: "(mention)",
     note:"",
     aliases:["p"],
     async execute(message, args) {
