@@ -240,7 +240,7 @@ module.exports = async (client) => {
             channel(client).send(`Prochaine question demain a ${next_hour + 1} heures !`);
 
             //Sécurité 
-            if (next_time - new Date() <= 72000000) {
+            if (next_time - new Date() <= 57600000) {
                 client.guilds.cache.get("767084336737943582").channels.cache.get("801837244859940944").send("<@277100743616364544> Ya un bug dans le timer je me freze")
                 break;
             }
