@@ -811,5 +811,8 @@ module.exports = {
     has_profil(id) {
         let profil = sql.prepare(`SELECT name, lastname FROM profil WHERE id=${id}`).get()
         return profil ? true : false
+    },
+    read_civ(id) {
+        return sql.prepare(`SELECT civ FROM profil WHERE id=${id}`).get().civ
     }
 }

@@ -27,6 +27,8 @@ module.exports = {
                     return message.channel.send("Désolé, une erreur c'est produite")
                 }
             })
+        } else if (args[1] == "help") {
+            message.channel.send("/db update [table] [column] [Where]")
         }
     }
         

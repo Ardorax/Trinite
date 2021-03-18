@@ -40,18 +40,3 @@ fs.readdir('./events/', (error, f) => {
         client.on(event, events.bind(null, client));
     });
 });
-
-
-/*
-console.log(sql.prepare("SELECT welcome FROM main WHERE id=0").get())
-
-// Filtre pour dire si la personne peux recevoir une couleur
-    
-client.on("message",message => {
-    message.channel.send()
-})
-
-*/
-
-
-

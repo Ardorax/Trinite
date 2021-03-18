@@ -37,8 +37,21 @@ function ask(client, question, reponse, time) {
 
             //Texte du message
             let user_answer_counter = sql.prepare(`SELECT answer_count FROM tiny_profil WHERE id=?`).get(collected.first().author.id);
-            let user_count_text = "C'est la première fois qu'il est le premier à donner la bonne réponse"
-            if(user_answer_counter) user_count_text = `C'est la ${user_answer_counter.answer_count + 1}eme fois qu'il donne une bonne réponse`
+
+            let user_count_text = "C'est la première fois qu'il/elle est le/la premier(e) à donner la bonne réponse"
+
+            //Msg au masculin ou au feminin
+            if(require("../commands/profil").has_profil(collected.first().author.id)) {
+                if(!user_answer_counter) {
+                    if(require("../commands/profil").read_civ(collected.first().author.id) == 0) user_count_text = "C'est la première fois qu'il est le premier à donner la bonne réponse"
+                    else user_count_text = "C'est la première fois qu'elle est la premiere à donner la bonne réponse"
+                } else {
+                    if(require("../commands/profil").read_civ(collected.first().author.id) == 0) user_count_text = `C'est la ${user_answer_counter.answer_count + 1}eme fois qu'il donne une bonne réponse`
+                    else user_count_text = `C'est la ${user_answer_counter.answer_count + 1}eme fois qu'elle donne une bonne réponse !`
+                }
+            } else if(user_answer_counter) user_count_text = `C'est la ${user_answer_counter.answer_count + 1}eme fois qu'il/elle donne une bonne réponse`
+
+
             message.then(m => m.edit(`${question}\n${collected.first().author} a trouvé la bonne réponse !\n${user_count_text}`))
             //collected.first().author.id
             resolve(collected.first().author.id)
@@ -61,7 +74,9 @@ function question() {
     let rng = random(1,total_question) - 1
 
     let r = sql.prepare(`SELECT question, answer, use FROM question_list WHERE use = ? LIMIT 1 OFFSET ${rng}`).get("0");
+    //           RECUP la question, la rep, son utilité dans table question_list 
     sql.prepare(`UPDATE "question_list" SET use = ? WHERE question = ?`).run(r.use + 1,r.question);
+    //           MAJ la table quest_list METTRE use a ? dans question = ?
     delete r.use
     return r
 }
@@ -218,7 +233,7 @@ module.exports = async (client) => {
         console.log("Fin de la premiere attente")
 
         //Boucle pour les fois d'apres 
-        for (let jour = 0; jour < 15; jour++) {
+        for (let jour = 0; jour < 150; jour++) {
 
             if(jour > 10) client.guilds.cache.get("767084336737943582").channels.cache.get("801837244859940944").send("<@277100743616364544> les questions")
 
