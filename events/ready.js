@@ -17,10 +17,14 @@ function ask(client, question, reponse, time) {
     let filter = messages => {
 
         if (messages.author.bot) return false;
+
+        console.log(`Réponce donné : ${messages.content}\nReponce attendu ${reponse}\nPéponce corrigé et attendu corrigé :\n${String(messages.content).toLowerCase().replace("-"," ").sansAccent()}\n${reponse.toLowerCase().replace("-"," ").sansAccent()}`)
         
         if (String(messages.content).toLowerCase().replace("-"," ").sansAccent() == reponse.toLowerCase().replace("-"," ").sansAccent()) {
+            console.log("corect")
             return true
         } else {
+            console.log("probleme")
             return false
         }
     }
