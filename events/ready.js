@@ -230,7 +230,7 @@ module.exports = async (client) => {
         console.log(`Prochaine question demain a ${next_hour} heures utc ! ${next_time.toUTCString()}`);
         console.log(`Attente : ${next_time - new Date()} next : ${next_time} now : ${new Date()}`)
 
-        channel(client).send(`Prochaine question demain a ${next_hour + 1} heures !`);
+        channel(client).send(`Prochaine question demain a ${next_hour + 2} heures !`);
         await waiting(next_time - new Date())
         //await waiting(10000)
 
@@ -256,7 +256,7 @@ module.exports = async (client) => {
             console.log(`Prochaine question demain a ${next_hour} heures utc ! ${next_time.toUTCString()}`);
             console.log(`Attente : ${next_time - new Date()} next : ${next_time} now : ${new Date()}`)
 
-            channel(client).send(`Prochaine question demain a ${next_hour + 1} heures !`);
+            channel(client).send(`Prochaine question demain a ${next_hour + 2} heures !`);
 
             //Sécurité 
             if (next_time - new Date() <= 57600000) {
