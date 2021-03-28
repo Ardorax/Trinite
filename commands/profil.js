@@ -15,7 +15,7 @@ module.exports = {
     description:"Profil des personnes",
     usage: "(mention)",
     note:"",
-    aliases:["p"],
+    aliases:["p","profile"],
     async execute(message, args) {
         if (!message.guild) {
 

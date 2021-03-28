@@ -3,8 +3,8 @@ const parametre = require("../paramtre.json")
 const SQLite = require("better-sqlite3");
 const sql = new SQLite('./trinite.sqlite');
 
-const week_end_hour = 17
-const week_hour = 11
+const week_end_hour = 16
+const week_hour = 10
 
 function random (min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
